@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-03-29T19:10:20+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">waizai’ blog</title><subtitle>学习blog</subtitle><entry><title type="html">docker 使用</title><link href="http://localhost:4000/jekyll/update/2023/03/29/docker%E4%BD%BF%E7%94%A8.html" rel="alternate" type="text/html" title="docker 使用" /><published>2023-03-29T16:42:47+08:00</published><updated>2023-03-29T16:42:47+08:00</updated><id>http://localhost:4000/jekyll/update/2023/03/29/docker%E4%BD%BF%E7%94%A8</id><content type="html" xml:base="http://localhost:4000/jekyll/update/2023/03/29/docker%E4%BD%BF%E7%94%A8.html"><![CDATA[<h2 id="docker基本使用指令">docker基本使用指令</h2>
+
+<h3 id="容器管理">容器管理</h3>
+
+<p>查看容器，显示正在运行的容器</p>
+
+<pre><code class="language-##shell">docker ps
+</code></pre>
+
+<p>添加参数a 查看所有容器</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker ps <span class="nt">-a</span>
+</code></pre></div></div>
+
+<p>守护进程方式启动容器</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-d</span> <span class="o">[</span>容器ID]
+docker run <span class="nt">-d</span> <span class="nt">-P</span> <span class="o">[</span>容器ID] //启动容器时设置自动映射
+</code></pre></div></div>
+
+<p>关闭容器</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker stop <span class="o">[</span>容器ID]
+</code></pre></div></div>
+
+<p>删除容器</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker <span class="nb">rm</span> <span class="o">[</span>容器ID] //删除已关闭的容器
+docker <span class="nb">rm</span> <span class="nt">-f</span> <span class="o">[</span>容器ID] //删除正在运行的容器
+</code></pre></div></div>
+
+<p>进入容器</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--name</span> <span class="o">[</span>容器名] <span class="nt">-it</span> <span class="o">[</span>镜像ID] /bin/bash 
+<span class="c">#--name:给容器定义一个名称</span>
+<span class="c">#-i:让容器的标准输入保持打开</span>
+<span class="c">#-t:让docker分配一个伪终端，并绑定到容器的标准输入上</span>
+docker <span class="nb">exec</span> <span class="nt">-it</span> <span class="o">[</span>容器ID] /bin/bash //手工进入容器
+</code></pre></div></div>
+
+<p>查看容器的详细信息</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker inspcet <span class="o">[</span>容器ID]
+</code></pre></div></div>
+
+<p>容器与主机传递文件</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker <span class="nb">cp</span> <span class="o">[</span>container_id]:[path] <span class="o">[</span>hostpath] <span class="c">#容器向主机传送文件</span>
+docker <span class="nb">cp</span> <span class="o">[</span>hostpath] <span class="o">[</span>container_id]:[path] <span class="c">#主机向docker容器传送文件</span>
+</code></pre></div></div>
+
+<p>将主机上的目录挂载到容器的目录上，并运行命令</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#--rm 运行后不保留容器</span>
+<span class="c">#-v 挂载文件，此处将本机选定的文件目录（一般都使用绝对路径）挂载到容器的 /app 下，挂载后，docker容器就能够访问操作当前目录下的文件了</span>
+<span class="c">#后面就能接需要在容器中运行的命令</span>
+docker run <span class="nt">--rm</span> <span class="nt">-it</span> <span class="nt">-v</span> /Users/mac/Desktop/tool/deep_learning/text_renderer:/app image-name python3 main.py
+</code></pre></div></div>
+
+<h3 id="镜像管理">镜像管理</h3>
+
+<p>查看镜像</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker images 
+</code></pre></div></div>
+
+<p>删除镜像</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker rmi <span class="o">[</span>docker-image-id]
+</code></pre></div></div>
+
+<p>将容器保存为镜像</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#将容器container_id提交保存为镜像image_name:tag</span>
+<span class="c">#-m指定提交的说明信息</span>
+docker commit <span class="nt">-m</span> <span class="s1">'why commit'</span> <span class="o">[</span>container_id] image_name:tag
+</code></pre></div></div>
+
+<h3 id="镜像导出与导入">镜像导出与导入</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#将镜像 imagename:tag 导出为 filename.tar</span>
+docker save <span class="o">&gt;</span> <span class="o">[</span>filename.tar] imagename:tag
+docker save <span class="nt">-o</span> <span class="o">[</span>filename.tar] imagename:tag
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#将导出的镜像文件导入到docker中</span>
+docker load &lt; <span class="o">[</span>filename.tar]
+</code></pre></div></div>
+
+<h3 id="dockerfile">DockerFile</h3>
+
+<h3 id="docker-compose">Docker-Compose</h3>
+
+<p>Docker Compose是用于定义与运行多容器Docker应用程序的工具，可以通过YML文件配置创建并启动所有服务。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker-compose -f docker_compose_path.yml  up -d
+</code></pre></div></div>
+
+<h3 id="ubuntu-用户无权限使用-docker">ubuntu 用户无权限使用 docker</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>gpasswd <span class="nt">-a</span> <span class="nv">$USER</span> dokcer <span class="c">#将登录用户加入到docker用户组中</span>
+newgrp docker <span class="c">#更新用户组</span>
+</code></pre></div></div>
+
+<h3 id="docker-daemon">Docker Daemon</h3>
+
+<p>Docker Daemon是 Dokcker 架构中运行在后台的守护进程。</p>
+
+<p>在用户使用 Docker 时，用户并不是直接与Docker的守护进程直接交互，而是通过 Docker client 与 Docker 的守护进程进行交互，可以改变Docker的连接方式来改变Docker client与Docker守护进程的交互方式（如可以让本地的Docker client 与远程的Docker守护进程进行交互）。</p>
+
+<p>修改文件 <code class="language-plaintext highlighter-rouge">/lib/systemd/system/docker.service</code></p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>Service]
+<span class="nv">ExecStart</span><span class="o">=</span>/usr/bin/dockerd <span class="nt">-H</span> fd:// <span class="nt">-H</span> unix:///var/run/docker.sock <span class="nt">-H</span> tcp://0.0.0.0:2375 <span class="nt">--default-ulimit</span><span class="o">=</span><span class="nv">nofile</span><span class="o">=</span>8192:16384 <span class="nt">--default-ulimit</span><span class="o">=</span><span class="nb">nproc</span><span class="o">=</span>8192:16384
+<span class="c"># 这样docker client就能够通过2375端口对Docker 守护进程进行访问。</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker <span class="nt">-H</span> <span class="o">[</span>IP:PORT]
+</code></pre></div></div>
+
+<h3 id="网络模式">网络模式</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">Docker 网络模式</th>
+      <th style="text-align: center">命令</th>
+      <th style="text-align: center">说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">host</td>
+      <td style="text-align: center">-net=host</td>
+      <td style="text-align: center">容器与宿主机共享 network namespace</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">container</td>
+      <td style="text-align: center">-net=container:name 或 ID</td>
+      <td style="text-align: center">多个容器之间共享一个network namespace</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">bridge</td>
+      <td style="text-align: center">-net=bridge</td>
+      <td style="text-align: center">默认选项</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">none</td>
+      <td style="text-align: center">-net=none</td>
+      <td style="text-align: center">容器有独立的 network namespace</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="创建网络">创建网络</h4>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker network create <span class="nt">--driver</span> 网络模式 <span class="nt">--subnet</span> IP段<span class="o">(</span>192.168.1.0/16<span class="o">)</span> <span class="nt">--gateway</span> 192.168.1.1 netname 
+</code></pre></div></div>
+
+<h4 id="查看docker网络">查看docker网络</h4>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker network <span class="nb">ls</span>
+</code></pre></div></div>
+
+<h4 id="查看某个网络的具体信息">查看某个网络的具体信息</h4>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker network inspect
+</code></pre></div></div>
+
+<h4 id="host-模式">host 模式</h4>
+
+<p>不会虚拟出容器自己的网卡，直接使用宿主机的IP与端口范围。</p>
+
+<h4 id="container-模式">container 模式</h4>
+
+<h4 id="bridge-模式">bridge 模式</h4>
+
+<h4 id="none模式">none模式</h4>
+
+<h3 id="docker-logs">docker logs</h3>]]></content><author><name></name></author><category term="jekyll" /><category term="update" /><summary type="html"><![CDATA[docker基本使用指令 容器管理 查看容器，显示正在运行的容器 docker ps 添加参数a 查看所有容器 docker ps -a 守护进程方式启动容器 docker run -d [容器ID] docker run -d -P [容器ID] //启动容器时设置自动映射 关闭容器 docker stop [容器ID] 删除容器 docker rm [容器ID] //删除已关闭的容器 docker rm -f [容器ID] //删除正在运行的容器 进入容器 docker run --name [容器名] -it [镜像ID] /bin/bash #--name:给容器定义一个名称 #-i:让容器的标准输入保持打开 #-t:让docker分配一个伪终端，并绑定到容器的标准输入上 docker exec -it [容器ID] /bin/bash //手工进入容器 查看容器的详细信息 docker inspcet [容器ID] 容器与主机传递文件 docker cp [container_id]:[path] [hostpath] #容器向主机传送文件 docker cp [hostpath] [container_id]:[path] #主机向docker容器传送文件 将主机上的目录挂载到容器的目录上，并运行命令 #--rm 运行后不保留容器 #-v 挂载文件，此处将本机选定的文件目录（一般都使用绝对路径）挂载到容器的 /app 下，挂载后，docker容器就能够访问操作当前目录下的文件了 #后面就能接需要在容器中运行的命令 docker run --rm -it -v /Users/mac/Desktop/tool/deep_learning/text_renderer:/app image-name python3 main.py 镜像管理 查看镜像 docker images 删除镜像 docker rmi [docker-image-id] 将容器保存为镜像 #将容器container_id提交保存为镜像image_name:tag #-m指定提交的说明信息 docker commit -m 'why commit' [container_id] image_name:tag 镜像导出与导入 #将镜像 imagename:tag 导出为 filename.tar docker save &gt; [filename.tar] imagename:tag docker save -o [filename.tar] imagename:tag #将导出的镜像文件导入到docker中 docker load &lt; [filename.tar] DockerFile Docker-Compose Docker Compose是用于定义与运行多容器Docker应用程序的工具，可以通过YML文件配置创建并启动所有服务。 docker-compose -f docker_compose_path.yml up -d ubuntu 用户无权限使用 docker sudo gpasswd -a $USER dokcer #将登录用户加入到docker用户组中 newgrp docker #更新用户组 Docker Daemon Docker Daemon是 Dokcker 架构中运行在后台的守护进程。 在用户使用 Docker 时，用户并不是直接与Docker的守护进程直接交互，而是通过 Docker client 与 Docker 的守护进程进行交互，可以改变Docker的连接方式来改变Docker client与Docker守护进程的交互方式（如可以让本地的Docker client 与远程的Docker守护进程进行交互）。 修改文件 /lib/systemd/system/docker.service [Service] ExecStart=/usr/bin/dockerd -H fd:// -H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375 --default-ulimit=nofile=8192:16384 --default-ulimit=nproc=8192:16384 # 这样docker client就能够通过2375端口对Docker 守护进程进行访问。 docker -H [IP:PORT] 网络模式 Docker 网络模式 命令 说明 host -net=host 容器与宿主机共享 network namespace container -net=container:name 或 ID 多个容器之间共享一个network namespace bridge -net=bridge 默认选项 none -net=none 容器有独立的 network namespace 创建网络 docker network create --driver 网络模式 --subnet IP段(192.168.1.0/16) --gateway 192.168.1.1 netname 查看docker网络 docker network ls 查看某个网络的具体信息 docker network inspect host 模式 不会虚拟出容器自己的网卡，直接使用宿主机的IP与端口范围。 container 模式 bridge 模式 none模式 docker logs]]></summary></entry><entry><title type="html">Welcome to Jekyll!</title><link href="http://localhost:4000/jekyll/update/2023/03/29/welcome-to-jekyll.html" rel="alternate" type="text/html" title="Welcome to Jekyll!" /><published>2023-03-29T16:42:47+08:00</published><updated>2023-03-29T16:42:47+08:00</updated><id>http://localhost:4000/jekyll/update/2023/03/29/welcome-to-jekyll</id><content type="html" xml:base="http://localhost:4000/jekyll/update/2023/03/29/welcome-to-jekyll.html"><![CDATA[<p>You’ll find this post in your <code class="language-plaintext highlighter-rouge">_posts</code> directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run <code class="language-plaintext highlighter-rouge">jekyll serve</code>, which launches a web server and auto-regenerates your site when a file is updated.</p>
+
+<p>Jekyll requires blog post files to be named according to the following format:</p>
+
+<p><code class="language-plaintext highlighter-rouge">YEAR-MONTH-DAY-title.MARKUP</code></p>
+
+<p>Where <code class="language-plaintext highlighter-rouge">YEAR</code> is a four-digit number, <code class="language-plaintext highlighter-rouge">MONTH</code> and <code class="language-plaintext highlighter-rouge">DAY</code> are both two-digit numbers, and <code class="language-plaintext highlighter-rouge">MARKUP</code> is the file extension representing the format used in the file. After that, include the necessary front matter. Take a look at the source for this post to get an idea about how it works.</p>
+
+<p>Jekyll also offers powerful support for code snippets:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">print_hi</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+  <span class="nb">puts</span> <span class="s2">"Hi, </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">"</span>
+<span class="k">end</span>
+<span class="n">print_hi</span><span class="p">(</span><span class="s1">'Tom'</span><span class="p">)</span>
+<span class="c1">#=&gt; prints 'Hi, Tom' to STDOUT.</span></code></pre></figure>
+
+<p>Check out the <a href="https://jekyllrb.com/docs/home">Jekyll docs</a> for more info on how to get the most out of Jekyll. File all bugs/feature requests at <a href="https://github.com/jekyll/jekyll">Jekyll’s GitHub repo</a>. If you have questions, you can ask them on <a href="https://talk.jekyllrb.com/">Jekyll Talk</a>.</p>]]></content><author><name></name></author><category term="jekyll" /><category term="update" /><summary type="html"><![CDATA[You’ll find this post in your _posts directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run jekyll serve, which launches a web server and auto-regenerates your site when a file is updated.]]></summary></entry></feed>
